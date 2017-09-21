@@ -1,0 +1,26 @@
+<PLAY>
+	<TAG1>
+		<TITLE1>aaa</TITLE1>
+		<TITLE2>bbb</TITLE2>
+	</TAG1>
+	<TAG1>
+		<TITLE1>ccc</TITLE1>
+		<TITLE2>ddd</TITLE2>
+	</TAG1>
+	<TAG2>
+		<TITLE1>aaa</TITLE1>
+		<TITLE2>ddd</TITLE2>
+	</TAG2>
+	<TAG2>
+		<TITLE1>ccc</TITLE1>
+		<TITLE2>eee</TITLE2>
+	</TAG2>
+	<TAG3>
+		<TITLE1>aaa</TITLE1>
+		<TITLE2>abc</TITLE2>
+	</TAG3>
+	<TAG3>
+		<TITLE1>ccc</TITLE1>
+		<TITLE2>zxc</TITLE2>
+	</TAG3>
+</PLAY>

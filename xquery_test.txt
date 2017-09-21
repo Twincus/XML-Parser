@@ -1,0 +1,148 @@
+XQuery #1
+<acts>
+{ for $a in doc("j_caesar.xml")//ACT
+	where empty ( for $sp in $a/SCENE/SPEECH/SPEAKER
+		where $sp/text() = "CASCA"
+		return <speaker> {$sp/text()}</speaker>
+	)
+	return <act>{$a/TITLE/text()}</act>
+}
+</acts>
+
+
+
+XQuery #2
+<result>{ for $a in (for $s in doc("j_caesar.xml")//ACT
+				return $s),
+	$sc in (for $t in $a/SCENE
+				return $t),
+	$sp in (for $d in $sc/SPEECH
+				return $d)
+	where $sp/LINE/text() = "Et tu, Brute! Then fall, Caesar."
+	return <who>{$sp/SPEAKER/text()}</who>,
+		<when>{
+			<act>{$a/TITLE/text()}</act>,
+			<scene>{$sc/TITLE/text()}</scene>
+		}</when>
+}
+</result>
+
+
+
+XQuery #3
+<result>{
+	for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+		where ($b/text() = "JULIUS CAESAR") or ($b/text()= "Another Poet")
+			return $b
+}
+</result>
+
+
+
+XQuery #4
+<result>{
+	for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+		where not (($b/text() = "JULIUS CAESAR") or ($b/text() = "Another Poet") )
+			return $b
+}
+</result>
+
+
+#5
+<result>{
+for $a in doc("j_caesar.xml")//ACT,
+    $sc in $a//SCENE,
+    $sp in $sc/SPEECH
+		where $sp/LINE/text() = "Et tu, Brute! Then fall, Caesar."
+			return <who>{$sp/SPEAKER/text()}</who>,
+					<when>{
+						<act>{$a/TITLE/text()}</act>,
+						<scene>{$sc/TITLE/text()}</scene>}
+					</when>
+}</result>
+
+
+#6
+for $s in doc("j_caesar.xml")//SPEAKER
+return <speaks>{<who>{$s/text()}</who>,
+                for $a in doc("j_caesar.xml")//ACT
+                where some $s1 in $a//SPEAKER satisfies $s1 eq $s
+                return <when>{$a/TITLE/text()}</when>}
+       </speaks>
+	   
+#7
+<result>{
+	for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+		where some $c in $b/text() satisfies (not $c = "Another Poet" and $c = "JULIUS CAESAR")
+			return $b
+}
+</result>
+
+
+#8
+<result>{
+	for $a in doc("j_caesar2.xml")//PERSONAE, $b in $a/PERSONA
+		where some $c in $b/text() satisfies (not $c = "bbb" or $c = "aaa")
+			return $b
+}
+</result>
+
+#9
+<result>{
+	for $a in doc("j_caesar2.xml")//PERSONAE
+		let $b := $a/PERSONA
+		where some $c in $b/text() satisfies (not $c = "bbb" or $c = "aaa")
+			return $b
+}
+</result>
+
+
+
+optimization
+
+#1
+for $a in doc("j_caesar2.xml")//TAG1,
+	$b in doc("j_caesar2.xml")//TAG2,	
+	$ta in $a/TITLE1, 
+	$c in doc("j_caesar2.xml")//TAG3,
+	$tb in $b/TITLE1,
+	$tc1 in $c/TITLE1,
+	$tc2 in $c/TITLE2/text()
+where $tb eq $ta and $tc1 eq $tb and $tc2 eq "abc"
+return
+	<result>
+		{ $ta,
+			<ti>{ $a/TITLE2 }</ti>,
+			<ti>{ $b/TITLE2 }</ti>,
+			<ti>{ $c/TITLE2 }</ti>}
+	</result>
+	
+	
+	
+#2
+for $s in doc("j_caesar.xml")//SPEAKER, $a in doc("j_caesar.xml")//ACT,
+    $sp in $a//SPEAKER, $stxt in $s/text()
+where $sp eq $s and $stxt = "CAESAR"
+return <act> { $a/TITLE/text()} </act>
+
+#3 
+for $b1 in doc("_book.xml")//book,
+$aj in $b1/author/first/text(),
+$a1 in $b1/author, 
+$af1 in $a1/first/text(),
+$al1 in $a1/last/text(),
+
+$b2 in doc("_book.xml")//book,
+$a21 in $b2/author,
+$af21 in $a21/first/text(),
+$al21 in $a21/last/text(),
+$a22 in $b2/author,
+$af22 in $a22/first/text(),
+$al22 in $a22/last/text(),
+
+$b3 in doc("_book.xml")//book,
+$a3 in $b3/author,
+$af3 in $a3/first/text(),
+$al3 in $a3/last/text()
+where $aj eq "W." and $af1 eq $af21 and $al1 eq $al21 and $af22 eq $af3 and $al22 eq $al3
+return <triplet> { $b1, $b2, $b3} </triplet>
